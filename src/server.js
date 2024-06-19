@@ -24,6 +24,7 @@ export const setupServer = () => {
   app.get('/contacts', async (req, res) => {
     const contacts = await getAllContacts();
     res.status(200).json({
+      status: 200,
       data: contacts,
       message: 'Successfully found contacts!',
     });
@@ -35,6 +36,7 @@ export const setupServer = () => {
 
     if (!mongoose.isValidObjectId(contactId)) {
       res.status(404).json({
+        status: 404,
         message: 'Not correct id',
       });
       return;
@@ -42,12 +44,14 @@ export const setupServer = () => {
 
     if (!contact) {
       res.status(500).json({
+        status: 500,
         message: 'Not found',
       });
       return;
     }
 
     res.status(200).json({
+      status: 200,
       data: contact,
       message: `Successfully found contact with id ${contactId}!`,
     });
@@ -55,6 +59,7 @@ export const setupServer = () => {
 
   app.use('*', (req, res) => {
     res.status(404).json({
+      status: 404,
       message: 'Not found',
     });
   });
