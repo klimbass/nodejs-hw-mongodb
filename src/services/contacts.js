@@ -1,9 +1,41 @@
+import { KEY_OF_CONTACTS, SORT_ORDER } from '../constants/contact-constants.js';
 import { ContactsCollection } from '../db/models/contact.js';
+import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
-export const getAllContacts = async () => {
-  const contacts = await ContactsCollection.find();
+export const getAllContacts = async ({
+  page = 1,
+  perPage = 10,
+  sortOrder = SORT_ORDER[0],
+  sortBy = KEY_OF_CONTACTS[0],
+  filter = {},
+}) => {
+  const limit = perPage;
+  const skip = (page - 1) * perPage;
 
-  return contacts;
+  const contactQuery = ContactsCollection.find();
+
+  if (filter.contactType) {
+    contactQuery.where('contactType').equals(filter.contactType);
+  }
+
+  if (filter.isFavourite !== undefined) {
+    contactQuery.where('isFavourite').equals(filter.isFavourite);
+  }
+  const contactCount = await ContactsCollection.find()
+    .merge(contactQuery)
+    .countDocuments();
+
+  const contacts = await contactQuery
+    .skip(skip)
+    .limit(limit)
+    .sort({ [sortBy]: sortOrder })
+    .exec();
+  const paginationData = calculatePaginationData(contactCount, perPage, page);
+
+  return {
+    data: contacts,
+    ...paginationData,
+  };
 };
 
 export const getContactById = async (contactId) => {
