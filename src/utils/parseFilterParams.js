@@ -10,11 +10,12 @@ const parseFavourite = (favourite) => {
   if (['false', 'true'].includes(favourite)) return favourite === 'true';
 };
 
-export const parseFilterParams = ({ isFavourite, contactType }) => {
+export const parseFilterParams = ({ isFavourite, contactType, userId }) => {
   const parsedIsFavourite = parseFavourite(isFavourite);
   const parsedContactType = parseType(contactType);
   return {
     isFavourite: parsedIsFavourite,
     contactType: parsedContactType,
+    userId: userId,
   };
 };
