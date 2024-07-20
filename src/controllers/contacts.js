@@ -9,6 +9,7 @@ import createHttpError from 'http-errors';
 import { parsePaginationParam } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+import saveFileToCloudinary from '../utils/saveFileToCloudinary.js';
 
 export const getContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParam(req.query);
@@ -54,7 +55,9 @@ export const getContactByIdController = async (req, res, next) => {
 
 export const createContactController = async (req, res) => {
   const userId = req.user._id;
-  const contact = await createContact({ userId, ...req.body });
+  const photo = req.file;
+  const photoURL = await saveFileToCloudinary(photo);
+  const contact = await createContact({ userId, ...req.body, photo: photoURL });
 
   res.status(201).json({
     status: 201,
