@@ -24,7 +24,9 @@ export const setupServer = () => {
       },
     }),
   );
-
+  app.get('/', (req, res) => {
+    res.send('Welcome to the homepage');
+  });
   app.use(router);
 
   app.use('*', notFoundHandler);
