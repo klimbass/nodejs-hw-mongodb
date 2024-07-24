@@ -24,8 +24,6 @@ authRouter.post(
   ctrlWrapper(registerUserController),
 );
 
-export default authRouter;
-
 authRouter.post(
   '/login',
   validateBody(loginUserSchema),
@@ -46,3 +44,5 @@ authRouter.post(
   validateBody(resetPasswordSchema),
   ctrlWrapper(resetPasswordController),
 );
+
+export default authRouter;
