@@ -5,8 +5,11 @@ import { SessionsCollection } from '../db/models/session.js';
 import { createSession } from '../utils/createSession.js';
 import jwt from 'jsonwebtoken';
 import { env } from '../utils/env.js';
-import { SMTP } from '../constants/index.js';
+import { SMTP, TEMPLATES_DIR } from '../constants/index.js';
 import { sendEmail } from '../utils/sendMail.js';
+import handlebars from 'handlebars';
+import path from 'node:path';
+import fs from 'node:fs/promises';
 
 export const findUser = (filter) => UserCollection.findOne(filter);
 
@@ -79,23 +82,24 @@ export const requestResetToken = async (email) => {
       expiresIn: '15m',
     },
   );
+
+  const resetPasswordTemplatePath = path.join(
+    TEMPLATES_DIR,
+    'reset-password-email.html',
+  );
+  const templateSource = await fs.readFile(resetPasswordTemplatePath, 'utf-8');
+  const template = handlebars.compile(templateSource);
+  const html = template({
+    name: user.name,
+    link: `${env('APP_DOMAIN')}/reset-password?token=${resetToken}`,
+  });
   await sendEmail({
     from: env(SMTP.SMTP_FROM),
     to: email,
     subject: 'Reset your password',
 
-    html: `<p>Click <a target="_blank" href="http://${env(
-      'APP_DOMAIN',
-    )}/reset-password?token=${resetToken}
-">here</a> to reset your password!</p>`,
-  })
-    .then(() => console.log('Email send successfully'))
-    .catch(() => {
-      throw createHttpError(
-        500,
-        'Failed to send the email, please try again later.',
-      );
-    });
+    html,
+  });
 };
 
 export const resetPassword = async (payload) => {
