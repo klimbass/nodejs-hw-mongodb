@@ -17,12 +17,14 @@ export const setupSessionCookies = (res, session) => {
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
     expires: new Date(Date.now() + MONTH),
-    sameSite: 'none',
+    sameSite: 'lax',
+    secure: true,
   });
   res.cookie('sessionId', session._id, {
     httpOnly: true,
     expires: new Date(Date.now() + MONTH),
-    sameSite: 'none',
+    sameSite: 'lax',
+    secure: true,
   });
 
 };

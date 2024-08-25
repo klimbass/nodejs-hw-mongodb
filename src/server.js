@@ -28,9 +28,9 @@ const store = new MongoStore({
 });
 
 const allowedOrigins = [
+  'https://goit-react-hw-08-five-gamma.vercel.app',
   'http://localhost:5173',
   'http://localhost:3000',
-  'https://goit-react-hw-08-five-gamma.vercel.app'
 ];
 
 export const setupServer = () => {
@@ -49,7 +49,7 @@ export const setupServer = () => {
       }
     },
     credentials: true,
-    optionsSuccessStatus: 200, // Додатково для обробки preflight-запитів
+    optionsSuccessStatus: 200,
   };
 
   app.use(cors(corsOptions));
