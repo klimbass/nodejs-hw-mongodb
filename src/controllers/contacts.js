@@ -55,9 +55,13 @@ export const getContactByIdController = async (req, res, next) => {
 
 export const createContactController = async (req, res) => {
   const userId = req.user._id;
-  const photo = req.file;
-  const photoURL = await saveFileToCloudinary(photo);
-  const contact = await createContact({ userId, ...req.body, photo: photoURL });
+  let photo;
+  let photoURL = '';
+  if(req.file){
+    photo = req.file;
+    photoURL = await saveFileToCloudinary(photo);
+  };
+  const contact = await createContact({ userId, ...req.body, photo: photoURL});
 
   res.status(201).json({
     status: 201,
@@ -83,7 +87,7 @@ export const patchContactController = async (req, res, next) => {
   res.json({
     status: 200,
     message: `Successfully patched a contact!`,
-    data: result.student,
+    data: result.contact,
   });
 };
 
@@ -100,8 +104,15 @@ export const deleteContactController = async (req, res, next) => {
         data: { message: 'Contact not found' },
       }),
     );
+
+
+
     return;
   }
-
-  res.status(204).send();
+  console.log(`Console in controller, deleted contact: ${contact} `);
+  res.status(201).json({
+    status: 201,
+    message: 'Successfully deleted contact',
+    data: contact,
+  });
 };

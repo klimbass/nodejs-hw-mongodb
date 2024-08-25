@@ -41,7 +41,7 @@ export const createContactSchema = Joi.object({
   contactType: Joi.string()
     .valid(...CONTACT_TYPE_LIST)
     .default(CONTACT_TYPE_LIST[0])
-    .required()
+    // .required()
     .messages({
       'any.only': `"contactType" must be one of the following values: ${CONTACT_TYPE_LIST}`,
     }),
