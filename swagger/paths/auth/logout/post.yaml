@@ -1,0 +1,36 @@
+tags:
+  - Auth
+summary: Logout user
+operationId: logoutUser
+description: 'Logout user'
+security:
+  - bearerAuth: []
+parameters:
+  - name: sessionId
+    in: cookie
+    required: true
+    schema:
+      type: string
+      example: abc123
+responses:
+  '204':
+    description: Successfully logout user
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 204
+            message:
+              type: string
+              example: Successfully logout user
+            data:
+              type: object
+  '401':
+    $ref: '../../../components/responses/401.yaml'
