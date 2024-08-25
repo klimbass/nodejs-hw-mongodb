@@ -37,15 +37,10 @@ export const setupServer = () => {
   const app = express();
 
   app.use(express.json());
+  app.use(cookieParser());
 
-  app.options('*', cors({
-    origin: allowedOrigins,
-    credentials: true,
-  }));
-
-  app.use(cors({
+  const corsOptions = {
     origin: (origin, callback) => {
-
       if (!origin || allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
@@ -54,8 +49,10 @@ export const setupServer = () => {
       }
     },
     credentials: true,
-  }));
-  app.use(cookieParser());
+    optionsSuccessStatus: 200, // Додатково для обробки preflight-запитів
+  };
+
+  app.use(cors(corsOptions));
 
   app.use(
     pino({
@@ -73,7 +70,7 @@ export const setupServer = () => {
     cookie: {
       secure: true,
       httpOnly: true,
-      sameSite: 'none',
+      sameSite: 'lax',
     },
   }));
 
