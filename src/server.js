@@ -27,20 +27,29 @@ const store = new MongoStore({
   autoRemove: 'native',
 });
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://goit-react-hw-08-five-gamma.vercel.app'
+];
+
 export const setupServer = () => {
   const app = express();
 
   app.use(express.json());
+
+  app.options('*', cors({
+    origin: allowedOrigins,
+    credentials: true,
+  }));
+
   app.use(cors({
     origin: (origin, callback) => {
-      const allowedOrigins = [
-        'http://localhost:5173',
-        'http://localhost:3000',
-        'https://goit-react-hw-08-five-gamma.vercel.app/'
-      ];
+
       if (!origin || allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
+        console.error(`Blocked by CORS: ${origin}`);
         callback(new Error('Not allowed by CORS'));
       }
     },
@@ -65,7 +74,6 @@ export const setupServer = () => {
       secure: true,
       httpOnly: true,
       sameSite: 'none',
-      // sameSite: 'lax', // або 'none' з `secure: true` для HTTPS
     },
   }));
 
