@@ -15,6 +15,7 @@ import {
   requestResetEmailSchema,
   resetPasswordSchema,
 } from '../validations/auth.js';
+import { authenticate } from '../middlewares/authenticate.js';
 
 const authRouter = Router();
 
@@ -30,7 +31,7 @@ authRouter.post(
   ctrlWrapper(loginUserController),
 );
 
-authRouter.post('/refresh', ctrlWrapper(refreshUserSessionController));
+authRouter.post('/refresh', authenticate, ctrlWrapper(refreshUserSessionController));
 authRouter.post('/logout', ctrlWrapper(logoutUserController));
 
 authRouter.post(

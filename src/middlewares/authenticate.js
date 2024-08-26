@@ -31,6 +31,10 @@ export const authenticate = async (req, res, next) => {
   if (!user) {
     return next(createHttpError(401, 'User not found'));
   }
+  console.log(`session in authenticate: ${session}`);
+
   req.user = user;
+  req.session.sessionId = session._id;
+  req.session.refreshToken = session.refreshToken;
   next();
 };
