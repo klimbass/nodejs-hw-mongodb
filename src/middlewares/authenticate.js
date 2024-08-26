@@ -36,5 +36,7 @@ export const authenticate = async (req, res, next) => {
   req.user = user;
   req.session.sessionId = session._id;
   req.session.refreshToken = session.refreshToken;
+  req.session.accessToken = token;
+
   next();
 };
